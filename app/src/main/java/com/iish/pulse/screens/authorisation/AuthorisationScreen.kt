@@ -38,7 +38,6 @@ fun AuthorisationScreen(
     navController: NavController,
     authorisationViewModel: AuthorisationViewModel
 ) {
-
     val viewState = authorisationViewModel.authorisationViewState.observeAsState()
     when (viewState.value) {
         AuthorisationViewState.Loading -> AuthorisationScreenLoading()

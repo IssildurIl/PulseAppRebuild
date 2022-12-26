@@ -1,9 +1,14 @@
 package com.iish.pulse.screens.elements
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,14 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import coil.compose.rememberImagePainter
 import com.iish.pulse.screens.theme.Shapes
 import com.iish.pulse.screens.theme.socialMediaButtonBackground
 import com.iish.pulse.utils.Country
@@ -158,6 +165,28 @@ fun SocialMediaSignInButtons(
             )
         }
     }
-
 }
 
+@Composable
+fun CircledImagePickerView(
+    modifier: Modifier = Modifier,
+    lastSelectedImage: Uri?,
+    onSelection: (Uri?) -> Unit
+) {
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()) {
+        onSelection(it)
+    }
+    Image(
+        modifier = modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .background(Color.LightGray)
+            .clickable {
+                galleryLauncher.launch("image/*")
+            },
+        painter = rememberImagePainter(lastSelectedImage),
+        contentDescription = "Profile Picture",
+        contentScale = ContentScale.Crop
+    )
+}

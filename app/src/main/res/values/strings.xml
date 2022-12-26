@@ -9,5 +9,8 @@
     <string name="reg_btn">Don`t have an Account? Sign Up</string>
     <string name="auth_error">Registration error</string>
 
+    <!--Registration screen-->
+    <string name="public_name_hint">Public name</string>
+    <string name="reply_password_hint">Reply password</string>
 
 </resources>

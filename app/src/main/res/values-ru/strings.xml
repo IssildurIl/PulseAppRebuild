@@ -8,4 +8,9 @@
     <string name="auth_btn">Вход</string>
     <string name="reg_btn">У вас нет учетной записи? Зарегиструйтесь</string>
     <string name="auth_error">Ошибка регистрации</string>
+
+    <!--Registration screen-->
+    <string name="public_name_hint">Никнейм пользователя</string>
+    <string name="reply_password_hint">Повторите пароль</string>
+
 </resources>
