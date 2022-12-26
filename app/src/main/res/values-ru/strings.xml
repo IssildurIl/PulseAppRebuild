@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Login screen-->
+    <string name="app_name">Пульс</string>
+    <string name="phone_hint">Телефон</string>
+    <string name="password_hint">Пароль</string>
+    <string name="alternative_login">Или зарегистрируйтесь с</string>
+    <string name="auth_btn">Вход</string>
+    <string name="reg_btn">У вас нет учетной записи? Зарегиструйтесь</string>
+    <string name="auth_error">Ошибка регистрации</string>
+</resources>

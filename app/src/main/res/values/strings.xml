@@ -1,0 +1,13 @@
+<resources>
+
+    <!--Login screen-->
+    <string name="app_name">Pulse</string>
+    <string name="phone_hint">Phone</string>
+    <string name="password_hint">Password</string>
+    <string name="alternative_login">Or login with</string>
+    <string name="auth_btn">Login</string>
+    <string name="reg_btn">Don`t have an Account? Sign Up</string>
+    <string name="auth_error">Registration error</string>
+
+
+</resources>
