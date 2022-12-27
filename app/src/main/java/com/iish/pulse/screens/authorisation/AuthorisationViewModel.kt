@@ -3,6 +3,7 @@ package com.iish.pulse.screens.authorisation
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ import com.iish.pulse.utils.Resource
 import com.iish.pulse.utils.Utils.handler
 import com.iish.pulse.utils.Utils.md5
 import com.iish.pulse.utils.getCountriesList
+import com.iish.pulseapprebuild.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -31,6 +33,8 @@ class AuthorisationViewModel @Inject constructor(
 ) : ViewModel(), EventHandler<AuthorisationEvent> {
 
     var phone by mutableStateOf("")
+    var validatePhone by mutableStateOf(true)
+
     var password by mutableStateOf("")
     val countriesList = getCountriesList()
     var mobileCountry by mutableStateOf(Country("ru", "7", "Russian Federation"))
@@ -87,8 +91,8 @@ class AuthorisationViewModel @Inject constructor(
 
     private fun isUserRegistered(){
         viewModelScope.launch {
-            val user = userRepository.fetchUserData().first()
-            if(user.login != ""){
+            val users = userRepository.fetchUserData()
+            if(users.isNotEmpty()){
                 _authorisationViewState.postValue(AuthorisationViewState.Success)
             }
         }

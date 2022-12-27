@@ -12,5 +12,12 @@
     <!--Registration screen-->
     <string name="public_name_hint">Никнейм пользователя</string>
     <string name="reply_password_hint">Повторите пароль</string>
+    <string name="email_hint">Почта</string>
+    <string name="registration_btn">Регистрация</string>
+
+    <!--Validation-->
+    <string name="name_validation">Ошибка ввода имени</string>
+    <string name="email_validation">Ошибка почты</string>
+    <string name="password_validation">Пароли не совпадают</string>
 
 </resources>

@@ -12,5 +12,12 @@
     <!--Registration screen-->
     <string name="public_name_hint">Public name</string>
     <string name="reply_password_hint">Reply password</string>
+    <string name="email_hint">Email</string>
+    <string name="registration_btn">Registration</string>
+
+    <!--Validation-->
+    <string name="name_validation">Name entry error</string>
+    <string name="email_validation">Mail error</string>
+    <string name="password_validation">Passwords do not match</string>
 
 </resources>

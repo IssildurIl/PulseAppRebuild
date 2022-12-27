@@ -11,10 +11,12 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -25,9 +27,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.iish.pulse.screens.elements.*
 import com.iish.pulse.screens.authorisation.model.AuthorisationEvent
 import com.iish.pulse.screens.authorisation.model.AuthorisationViewState
+import com.iish.pulse.screens.elements.*
+import com.iish.pulse.utils.Utils.mobileNumberFilter
 import com.iish.pulse.utils.gilroy_medium
 import com.iish.pulseapprebuild.R
 
@@ -50,7 +53,7 @@ fun AuthorisationScreen(
             AuthorisationScreenError()
         }
         AuthorisationViewState.WaitingForUser -> {
-            CommonAuthorisationScreen(authorisationViewModel)
+            CommonAuthorisationScreen(authorisationViewModel, navController)
         }
         else -> {
             Text(
@@ -62,10 +65,14 @@ fun AuthorisationScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommonAuthorisationScreen(
-    authorisationViewModel: AuthorisationViewModel
+    authorisationViewModel: AuthorisationViewModel,
+    navController: NavController
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -78,7 +85,9 @@ fun CommonAuthorisationScreen(
         Title(
             text = stringResource(R.string.app_name)
         )
-        RegistrationTextField(
+
+        //Phone
+        RegistrationWithIconTextField(
             text = authorisationViewModel.phone,
             placeholder = stringResource(id = R.string.phone_hint),
             leadingIcon = {
@@ -99,10 +108,12 @@ fun CommonAuthorisationScreen(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 }
-            )
+            ),
+            visualTransformation = { mobileNumberFilter(it) }
         )
 
-        RegistrationTextField(
+        //Password
+        RegistrationWithIconTextField(
             text = authorisationViewModel.password,
             placeholder = stringResource(id = R.string.password_hint),
             leadingIcon = {
@@ -124,10 +135,7 @@ fun CommonAuthorisationScreen(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password,
             keyBoardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            ),
+                onDone = {keyboardController?.hide()}),
             visualTransformation = if (isPasswordVisible)
                 VisualTransformation.None
             else
@@ -172,7 +180,9 @@ fun CommonAuthorisationScreen(
         }
 
         TextButton(
-            onClick = {},
+            onClick = {
+                navController.navigate(route = "registration_screen")
+            },
             contentPadding = PaddingValues(vertical = 0.dp)
         ) {
             Text(

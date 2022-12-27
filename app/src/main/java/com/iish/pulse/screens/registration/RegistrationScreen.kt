@@ -1,33 +1,31 @@
 package com.iish.pulse.screens.registration
 
-import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.iish.pulse.screens.elements.CountryPickerView
-import com.iish.pulse.screens.elements.MyCoolForm
-import com.iish.pulse.screens.elements.RegistrationTextField
+import com.iish.pulse.screens.elements.*
+import com.iish.pulse.screens.registration.models.RegistrationEvent
 import com.iish.pulse.screens.registration.models.RegistrationViewState
+import com.iish.pulse.utils.Utils
 import com.iish.pulseapprebuild.R
 
 @Composable
@@ -58,8 +56,15 @@ fun RegistrationScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
+
+    val nameFieldError = stringResource(id = R.string.name_validation)
+    val emailFieldError = stringResource(id = R.string.email_validation)
+    val passwordsFieldError = stringResource(id = R.string.password_validation)
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -69,12 +74,39 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
         val focusManager = LocalFocusManager.current
         var isPasswordVisible by remember { mutableStateOf(false) }
 
+        //iconPick
+
+        ImagePickerView(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            lastSelectedImage = registrationViewModel.pickedImage.value,
+            onSelection = {
+                registrationViewModel.pickedImage.value = it
+            }
+        )
+
+//        //Email
+//        CustomOutlinedTextField(
+//            value = registrationViewModel.email,
+//            onValueChange = {registrationViewModel.email = it},
+//            label = stringResource(id = R.string.email_hint),
+//            showError = !registrationViewModel.emailFieldError,
+//            errorMessage = stringResource(id = R.string.phone_validation),
+//            leadingIconImageVector = Icons.Filled.Visibility,
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Email,
+//                imeAction = ImeAction.Next
+//            ),
+//            keyboardActions = KeyboardActions(
+//                onNext = {focusManager.moveFocus(FocusDirection.Down)}
+//            )
+//        )
+
         //Public Name
         RegistrationTextField(
-            text = registrationViewModel.firstName,
-            placeholder = "First Name",
+            text = registrationViewModel.name,
+            placeholder = stringResource(id = R.string.public_name_hint),
             onChange = {
-                registrationViewModel.firstName = it
+                registrationViewModel.name = it
             },
             imeAction = ImeAction.Next,//Show next as IME button
             keyboardType = KeyboardType.Text, //Plain text keyboard
@@ -82,11 +114,13 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 }
-            )
+            ),
+            showError = !registrationViewModel.isPublicNameFieldError,
+            errorMessage = nameFieldError
         )
 
         //Phone
-        RegistrationTextField(
+        RegistrationWithIconTextField(
             text = registrationViewModel.phone,
             placeholder = stringResource(id = R.string.phone_hint),
             leadingIcon = {
@@ -107,11 +141,31 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 }
-            )
+            ),
+            visualTransformation = { Utils.mobileNumberFilter(it) }
         )
 
-        //Password
+        //Email
         RegistrationTextField(
+            text = registrationViewModel.email,
+            placeholder = stringResource(id = R.string.email_hint),
+            onChange = {
+                registrationViewModel.email = it
+            },
+            imeAction = ImeAction.Next,//Show next as IME button
+            keyboardType = KeyboardType.Text, //Plain text keyboard
+            keyBoardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            ),
+            showError = !registrationViewModel.isEmailFieldError,
+            errorMessage = emailFieldError
+        )
+
+
+        //Password
+        RegistrationWithIconTextField(
             text = registrationViewModel.password,
             placeholder = stringResource(id = R.string.password_hint),
             leadingIcon = {
@@ -130,7 +184,7 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
             onChange = {
                 registrationViewModel.password = it
             },
-            imeAction = ImeAction.Done,
+            imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Password,
             keyBoardActions = KeyboardActions(
                 onNext = {
@@ -141,10 +195,12 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                 VisualTransformation.None
             else
                 PasswordVisualTransformation(),
+            showError = !registrationViewModel.isPasswordsSame,
+            errorMessage = passwordsFieldError
         )
 
         //RePassword
-        RegistrationTextField(
+        RegistrationWithIconTextField(
             text = registrationViewModel.passwordReply,
             placeholder = stringResource(id = R.string.reply_password_hint),
             leadingIcon = {
@@ -166,15 +222,28 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password,
             keyBoardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            ),
+                onDone = {keyboardController?.hide()}),
             visualTransformation = if (isPasswordVisible)
                 VisualTransformation.None
             else
                 PasswordVisualTransformation(),
+            showError = !registrationViewModel.isPasswordsSame,
+            errorMessage = passwordsFieldError
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+            Button(
+                onClick = { registrationViewModel.obtainEvent(RegistrationEvent.onRegistrationClicked) },
+                shape = RoundedCornerShape(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(text = stringResource(id = R.string.registration_btn))
+            }
+        }
 
     }
 
