@@ -14,6 +14,12 @@
     <string name="reply_password_hint">Reply password</string>
     <string name="email_hint">Email</string>
     <string name="registration_btn">Registration</string>
+    //ImagePicker
+    <string name="image_picker_title">Image</string>
+    <string name="image_picker_subtitle">Select image source</string>
+    <string name="image_picker_camera_btn">Pick image from camera</string>
+    <string name="image_picker_gallery_btn">Pick image from gallery</string>
+
 
     <!--Validation-->
     <string name="name_validation">Name entry error</string>

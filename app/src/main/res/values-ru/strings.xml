@@ -14,6 +14,11 @@
     <string name="reply_password_hint">Повторите пароль</string>
     <string name="email_hint">Почта</string>
     <string name="registration_btn">Регистрация</string>
+    //ImagePicker
+    <string name="image_picker_title">Изображение</string>
+    <string name="image_picker_subtitle">Выберите источник изображения</string>
+    <string name="image_picker_camera_btn">Выбрать изображение с камеры</string>
+    <string name="image_picker_gallery_btn">Выбрать изображение из галлереи</string>
 
     <!--Validation-->
     <string name="name_validation">Ошибка ввода имени</string>

@@ -18,3 +18,4 @@ val LightPrimaryColor = Color(0xFFFFF6EE)
 
 //CustomColor
 val socialMediaButtonBackground = Color(0xFFF8F8FD)
+val pulseAppColor = Color(0xFF7D80DB)

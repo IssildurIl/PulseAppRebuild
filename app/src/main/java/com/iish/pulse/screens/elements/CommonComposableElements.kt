@@ -1,12 +1,10 @@
 package com.iish.pulse.screens.elements
 
-import android.Manifest
-import android.graphics.Bitmap
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +19,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,24 +32,32 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.iish.pulse.screens.theme.Shapes
+import com.iish.pulse.screens.theme.pulseAppColor
 import com.iish.pulse.screens.theme.socialMediaButtonBackground
 import com.iish.pulse.utils.Country
-import com.iish.pulse.utils.Utils.toUri
 import com.iish.pulse.utils.getFlagEmojiFor
 import com.iish.pulse.utils.gilroy_extra_bold
+import com.iish.pulse.utils.gilroy_regular
+import com.iish.pulseapprebuild.R
 
 @Composable
 fun CountryPickerView(
@@ -341,65 +350,204 @@ fun SocialMediaSignInButtons(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+
 @Composable
 fun ImagePickerView(
     modifier: Modifier = Modifier,
     lastSelectedImage: Uri?,
-    onSelection: (Uri?) -> Unit
+    onClicked: (Boolean) -> Unit,
 ) {
-    val context = LocalContext.current
-    val cameraPermission = rememberPermissionState(Manifest.permission.CAMERA)
-    var isPermissionRequested by rememberSaveable { mutableStateOf(false) }
-
-    val cameraLauncher: ManagedActivityResultLauncher<Void?, Bitmap?> =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
-            onSelection(it?.toUri(context))
-        }
-
-    if (isPermissionRequested && cameraPermission.hasPermission) {
-        cameraLauncher.launch()
-        isPermissionRequested = false
-    }
-
     Image(
         modifier = modifier
-            .size(100.dp)
+            .size(150.dp)
             .clip(CircleShape)
             .background(Color.LightGray)
             .clickable {
-                if (!cameraPermission.hasPermission) {
-                    cameraPermission.launchPermissionRequest()
-                    isPermissionRequested = true
-                } else
-                    cameraLauncher.launch()
+                onClicked(true)
             },
-        painter = rememberImagePainter(lastSelectedImage),
+        painter = if (lastSelectedImage == null)
+            painterResource(R.drawable.icon_add_photo)
+        else
+            rememberImagePainter(lastSelectedImage),
         contentDescription = "Profile Picture",
         contentScale = ContentScale.Crop
     )
 }
 
 @Composable
-fun ImageCirclePickerView(
-    modifier: Modifier = Modifier,
-    lastSelectedImage: Uri?,
-    onSelection: (Uri?) -> Unit
+fun InfoDialog(
+    title: String,
+    description: String,
+    onDismiss: () -> Unit,
+    firstBtnText: String,
+    onFirstBtnClicked: () -> Unit,
+    secondBtnText: String,
+    onSecondBtnClicked: () -> Unit,
+    rawRes: Int
 ) {
-    val galleryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()) {
-        onSelection(it)
+
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Box(modifier = Modifier.height(480.dp)) {
+            Column(modifier = Modifier) {
+                Spacer(modifier = Modifier.height(130.dp))
+                Box(
+                    modifier = Modifier
+                        .height(490.dp)
+                        .background(
+                            color = pulseAppColor,
+                            shape = RoundedCornerShape(25.dp, 10.dp, 25.dp, 10.dp)
+                        )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        Text(
+                            text = title,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.h3,
+                            color = Color.Black,
+                            fontFamily = gilroy_regular
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = description,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(top = 10.dp, start = 25.dp, end = 25.dp),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Black,
+                            fontFamily = gilroy_regular
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        ElevatedButton(
+                            onClick = {
+                                onFirstBtnClicked()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                        ) {
+                            Text(
+                                text = firstBtnText,
+                                color = Color.Black
+                            )
+                        }
+                        ElevatedButton(
+                            onClick = {
+                                onSecondBtnClicked()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(5.dp))
+                        ) {
+                            Text(text = secondBtnText, color = Color.Black)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
+            }
+            HeaderImage(
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.TopCenter),
+                rawRes = rawRes
+            )
+        }
     }
-    Image(
+}
+
+@Composable
+fun HeaderImage(modifier: Modifier, rawRes: Int) {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(rawRes))
+    val progress by animateLottieCompositionAsState(composition = composition)
+
+    LottieAnimation(
+        composition = composition,
+        progress = progress,
         modifier = modifier
-            .size(100.dp)
-            .clip(CircleShape)
-            .background(Color.LightGray)
-            .clickable {
-                galleryLauncher.launch("image/*")
-            },
-        painter = rememberImagePainter(lastSelectedImage),
-        contentDescription = "Profile Picture",
-        contentScale = ContentScale.Crop
     )
+}
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//private fun TopAppBar(
+//    title: String,
+//    navigationIconContent: @Composable () -> Unit,
+//    scrollBehavior: TopAppBarScrollBehavior?,
+//    modifier: Modifier = Modifier
+//) {
+//    CenterAlignedTopAppBar(
+//        title = {
+//            Row {
+//                Image(
+//                    painter = painterResource(id = R.drawable.icon_article_background),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .clip(CircleShape)
+//                        .size(36.dp)
+//                )
+//                Text(
+//                    text = stringResource(R.string.published_in, title),
+//                    style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
+//                    modifier = Modifier.padding(start = 8.dp)
+//                )
+//            }
+//        },
+//        navigationIcon = navigationIconContent,
+//        scrollBehavior = scrollBehavior,
+//        modifier = modifier
+//    )
+//}
+//
+
+
+
+/**
+ * Composable helper for permission checking
+ *
+ * onDenied contains lambda for request permission
+ *
+ * @param permission permission for request
+ * @param onGranted composable for [PackageManager.PERMISSION_GRANTED]
+ * @param onDenied composable for [PackageManager.PERMISSION_DENIED]
+ */
+@Composable
+fun ComposablePermission(
+    permission: String,
+    onDenied: @Composable (requester: () -> Unit) -> Unit,
+    onGranted: @Composable () -> Unit
+) {
+    val ctx = LocalContext.current
+
+    // check initial state of permission, it may be already granted
+    var grantState by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                ctx,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    if (grantState) {
+        onGranted()
+    } else {
+        val launcher: ManagedActivityResultLauncher<String, Boolean> =
+            rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
+                grantState = it
+            }
+        onDenied { launcher.launch(permission) }
+    }
 }

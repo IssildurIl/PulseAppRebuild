@@ -39,7 +39,6 @@ class RegistrationViewModel @Inject constructor(
 
     val pickedImage = mutableStateOf<Uri?>(null)
 
-
     val countriesList = getCountriesList()
     var mobileCountry by mutableStateOf(Country("ru", "7", "Russian Federation"))
 
@@ -61,7 +60,6 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun registerUser() {
-//        _registrationViewState.postValue(RegistrationViewState.Loading)
         checkFields()
         viewModelScope.launch {
 
