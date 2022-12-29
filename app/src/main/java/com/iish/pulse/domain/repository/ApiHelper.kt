@@ -17,9 +17,6 @@ interface ApiHelper {
     /**
      * Authorization
      */
-    suspend fun authUser(auth: AuthUser): Response<UserAuth>
-
-    suspend fun getNewToken(auth: AuthUser): Call<UserAuth>
 
     suspend fun subscription(
         token: String,
@@ -36,49 +33,12 @@ interface ApiHelper {
         orgID: Entity
     ): Response<PublicationCounters>
 
-    /**
-     * Registration new user
-     */
-
-    suspend fun createNewUser(
-        createUser: CreateUser
-    ): Response<NewUser>
-
-    /**
-     * Activating new user
-     */
-
-    suspend fun activatedUser(
-        code: String
-    ): Response<NewUser>
-
-    /**
-     * Get user information by token
-     */
-
-    suspend fun getUserInf(
-        token: String,
-        revision: Int
-    ): Response<UserInfo>
 
     suspend fun getUserOrOrgPreview(
         token: String,
         previewModel: PreviewModel
     ): Response<PreviewUserOrOrganization>
 
-    suspend fun getUserInfForEdit(
-        token: String
-    ): Response<UserEditModel>
-
-    suspend fun changeUserData(
-        token: String,
-        changeData: UserChangeData
-    ): Response<UserChangeResponse>
-
-    suspend fun setUserAvatar(
-        token: String?,
-        uri: MultipartBody.Part
-    ): Response<Entity>
 
     /**
      * Publication

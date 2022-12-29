@@ -10,6 +10,7 @@
     <string name="auth_error">Ошибка регистрации</string>
 
     <!--Registration screen-->
+    <string name="registration_title">Регистрация</string>
     <string name="public_name_hint">Никнейм пользователя</string>
     <string name="reply_password_hint">Повторите пароль</string>
     <string name="email_hint">Почта</string>
@@ -19,6 +20,9 @@
     <string name="image_picker_subtitle">Выберите источник изображения</string>
     <string name="image_picker_camera_btn">Выбрать изображение с камеры</string>
     <string name="image_picker_gallery_btn">Выбрать изображение из галлереи</string>
+
+    <!--Verification-->
+    <string name="activation_title">Активация</string>
 
     <!--Validation-->
     <string name="name_validation">Ошибка ввода имени</string>

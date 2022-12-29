@@ -13,6 +13,7 @@ import com.iish.pulse.data.features.user.UserRepository
 import com.iish.pulse.data.source.request.AuthUser
 import com.iish.pulse.data.source.responses.UserAuth
 import com.iish.pulse.domain.repository.ApiHelper
+import com.iish.pulse.domain.repository.UserHelper
 import com.iish.pulse.screens.authorisation.model.AuthorisationEvent
 import com.iish.pulse.screens.authorisation.model.AuthorisationViewState
 import com.iish.pulse.utils.Country
@@ -28,13 +29,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorisationViewModel @Inject constructor(
-    private val apiHelper: ApiHelper,
+    private val userHelper: UserHelper,
     private val userRepository: UserRepository
 ) : ViewModel(), EventHandler<AuthorisationEvent> {
 
     var phone by mutableStateOf("")
-    var validatePhone by mutableStateOf(true)
-
     var password by mutableStateOf("")
     val countriesList = getCountriesList()
     var mobileCountry by mutableStateOf(Country("ru", "7", "Russian Federation"))
@@ -70,7 +69,7 @@ class AuthorisationViewModel @Inject constructor(
         viewModelScope.launch {
             val login = "+${mobileCountry.code + phone}"
             val password = md5(password)
-            val userData = apiHelper.authUser(AuthUser(login = login, password = password))
+            val userData = userHelper.authUser(AuthUser(login = login, password = password))
             if (userData.isSuccessful) {
                 _user.postValue(handler(userData))
                 loadDataToDB(login, password)

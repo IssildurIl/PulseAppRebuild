@@ -14,6 +14,7 @@ import com.iish.pulse.screens.main_screen.MainScreenViewModel
 import com.iish.pulse.screens.registration.RegistrationScreen
 import com.iish.pulse.screens.registration.RegistrationViewModel
 import com.iish.pulse.screens.verification.VerificationScreen
+import com.iish.pulse.screens.verification.VerificationViewModel
 
 @ExperimentalMaterialApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -30,8 +31,8 @@ fun Navigation() {
             RegistrationScreen(navController, registrationViewModel)
         }
         composable(route = Screen.VerificationScreen.route) {
-            val registrationViewModel = hiltViewModel<RegistrationViewModel>()
-            VerificationScreen(navController, registrationViewModel)
+            val verificationViewModel = hiltViewModel<VerificationViewModel>()
+            VerificationScreen(navController, verificationViewModel)
         }
         composable(route = Screen.MainScreen.route) {
             val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()

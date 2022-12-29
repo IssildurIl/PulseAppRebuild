@@ -7,22 +7,24 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -42,7 +44,6 @@ import com.iish.pulse.screens.registration.models.RegistrationViewState
 import com.iish.pulse.utils.Utils
 import com.iish.pulse.utils.Utils.toUri
 import com.iish.pulseapprebuild.R
-import java.util.Calendar
 
 @Composable
 fun RegistrationScreen(
@@ -54,9 +55,13 @@ fun RegistrationScreen(
         RegistrationViewState.Loading -> {
 
         }
-        RegistrationViewState.Success -> {
 
+        RegistrationViewState.Success -> {
+            LaunchedEffect(key1 = Unit, block = {
+                navController.navigate(route = "verification_screen")
+            })
         }
+
         RegistrationViewState.Error -> {
         }
         RegistrationViewState.WaitingForUser -> {
@@ -72,7 +77,7 @@ fun RegistrationScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
 
@@ -85,7 +90,7 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
 
     val focusManager = LocalFocusManager.current
     var isPasswordVisible by remember { mutableStateOf(false) }
-
+    var isReplyPasswordVisible by remember { mutableStateOf(false) }
     //iconPick
 
     val infoDialog = remember { mutableStateOf(false) }
@@ -104,29 +109,27 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
             infoDialog.value = false
         }
 
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+
     Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Text(text = "Top App Bar")
-            },
-            navigationIcon = {
-                IconButton(onClick = {}) {
-                    Icon(Icons.Filled.ArrowBack, "backIcon")
-                }
-            },
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.White,
-            elevation = 10.dp
+        CustomTopAppBar(
+            topAppBarText = stringResource(id = R.string.registration_title),
+            onBackPressed = { }
         )
-    }){ paddingValues ->
+    }) { paddingValues ->
         Image(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
             painter = painterResource(id = R.drawable.icon_registration_background_bottom),
-            contentDescription = ""
+            contentDescription = "",
+            contentScale = ContentScale.FillBounds
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(paddingValues = paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -139,6 +142,8 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                     infoDialog.value = it
                 }
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             if (infoDialog.value) {
                 InfoDialog(
@@ -267,10 +272,10 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                 placeholder = stringResource(id = R.string.reply_password_hint),
                 leadingIcon = {
                     IconButton(onClick = {
-                        isPasswordVisible = !isPasswordVisible
+                        isReplyPasswordVisible = !isReplyPasswordVisible
                     }) {
                         Icon(
-                            imageVector = if (isPasswordVisible)
+                            imageVector = if (isReplyPasswordVisible)
                                 Icons.Filled.Visibility
                             else
                                 Icons.Filled.VisibilityOff,
@@ -279,13 +284,13 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
                     }
                 },
                 onChange = {
-                    registrationViewModel.password = it
+                    registrationViewModel.passwordReply = it
                 },
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password,
                 keyBoardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() }),
-                visualTransformation = if (isPasswordVisible)
+                visualTransformation = if (isReplyPasswordVisible)
                     VisualTransformation.None
                 else
                     PasswordVisualTransformation(),

@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +32,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -240,7 +238,8 @@ fun RegistrationTextField(
             focusedBorderColor = Color.Black,
             unfocusedBorderColor = Color.Gray,
             disabledBorderColor = Color.Gray,
-            disabledTextColor = Color.Black
+            disabledTextColor = Color.Black,
+            backgroundColor = Color.White
         ),
         singleLine = true,
     )
@@ -293,10 +292,12 @@ fun RegistrationWithIconTextField(
             focusedBorderColor = Color.Black,
             unfocusedBorderColor = Color.Gray,
             disabledBorderColor = Color.Gray,
-            disabledTextColor = Color.Black
+            disabledTextColor = Color.Black,
+            backgroundColor = Color.White
         ),
         singleLine = true,
-    )
+
+        )
     if (showError) {
         Text(
             text = errorMessage,
@@ -481,38 +482,33 @@ fun HeaderImage(modifier: Modifier, rawRes: Int) {
     )
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//private fun TopAppBar(
-//    title: String,
-//    navigationIconContent: @Composable () -> Unit,
-//    scrollBehavior: TopAppBarScrollBehavior?,
-//    modifier: Modifier = Modifier
-//) {
-//    CenterAlignedTopAppBar(
-//        title = {
-//            Row {
-//                Image(
-//                    painter = painterResource(id = R.drawable.icon_article_background),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .clip(CircleShape)
-//                        .size(36.dp)
-//                )
-//                Text(
-//                    text = stringResource(R.string.published_in, title),
-//                    style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
-//                    modifier = Modifier.padding(start = 8.dp)
-//                )
-//            }
-//        },
-//        navigationIcon = navigationIconContent,
-//        scrollBehavior = scrollBehavior,
-//        modifier = modifier
-//    )
-//}
-//
-
+@OptIn(ExperimentalMaterial3Api::class) // CenterAlignedTopAppBar is experimental in m3
+@Composable
+fun CustomTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
+    CenterAlignedTopAppBar(
+        title = {
+            androidx.compose.material3.Text(
+                text = topAppBarText,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.CenterStart),
+            )
+        },
+        navigationIcon = {
+            androidx.compose.material3.IconButton(onClick = onBackPressed) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_back),
+                    contentDescription = "Back",
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                )
+            }
+        },
+        // We need to balance the navigation icon, so we add a spacer.
+        actions = {
+            Spacer(modifier = Modifier.width(68.dp))
+        },
+    )
+}
 
 
 /**

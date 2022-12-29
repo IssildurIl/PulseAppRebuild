@@ -10,6 +10,7 @@
     <string name="auth_error">Registration error</string>
 
     <!--Registration screen-->
+    <string name="registration_title">Registration</string>
     <string name="public_name_hint">Public name</string>
     <string name="reply_password_hint">Reply password</string>
     <string name="email_hint">Email</string>
@@ -20,10 +21,15 @@
     <string name="image_picker_camera_btn">Pick image from camera</string>
     <string name="image_picker_gallery_btn">Pick image from gallery</string>
 
+    <!--Verification-->
+    <string name="activation_title">Activation</string>
+
 
     <!--Validation-->
     <string name="name_validation">Name entry error</string>
     <string name="email_validation">Mail error</string>
     <string name="password_validation">Passwords do not match</string>
+
+
 
 </resources>

@@ -2,12 +2,13 @@ package com.iish.pulse.di
 
 import android.content.Context
 import androidx.room.Room
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport.Session.User
 import com.iish.pulse.data.database.PulseDatabase
 import com.iish.pulse.data.features.user.UserDao
 import com.iish.pulse.data.remote.Api
 import com.iish.pulse.data.repository.RepositoryImpl
+import com.iish.pulse.data.repository.UserRepositoryImpl
 import com.iish.pulse.domain.repository.ApiHelper
+import com.iish.pulse.domain.repository.UserHelper
 import com.iish.pulse.utils.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -48,8 +49,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiHelper(api:Api):ApiHelper{
+    fun provideApiHelper(api: Api): ApiHelper {
         return RepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserHelper(api: Api): UserHelper {
+        return UserRepositoryImpl(api)
     }
 
     @Provides

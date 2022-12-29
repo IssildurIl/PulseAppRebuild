@@ -17,12 +17,6 @@ import retrofit2.http.Body
 
 class RepositoryImpl(private val api: Api) : ApiHelper {
 
-    override suspend fun authUser(@Body auth: AuthUser): Response<UserAuth> =
-        api.authUser(auth)
-
-    override suspend fun getNewToken(@Body auth: AuthUser): Call<UserAuth> =
-        api.getNewToken(auth)
-
     override suspend fun subscription(token: String, previewModel: PreviewModel): Response<UserSubscriptionResponse> {
         TODO("Not yet implemented")
     }
@@ -35,31 +29,7 @@ class RepositoryImpl(private val api: Api) : ApiHelper {
         TODO("Not yet implemented")
     }
 
-    override suspend fun createNewUser(createUser: CreateUser): Response<NewUser> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun activatedUser(code: String): Response<NewUser> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getUserInf(token: String, revision: Int): Response<UserInfo> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getUserOrOrgPreview(token: String, previewModel: PreviewModel): Response<PreviewUserOrOrganization> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getUserInfForEdit(token: String): Response<UserEditModel> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun changeUserData(token: String, changeData: UserChangeData): Response<UserChangeResponse> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun setUserAvatar(token: String?, uri: MultipartBody.Part): Response<Entity> {
         TODO("Not yet implemented")
     }
 

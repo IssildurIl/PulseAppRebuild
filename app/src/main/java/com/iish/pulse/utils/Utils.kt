@@ -1,8 +1,11 @@
 package com.iish.pulse.utils
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Patterns
@@ -19,7 +22,7 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.util.Date
+import java.util.*
 
 
 object Utils {
@@ -108,4 +111,27 @@ object Utils {
         )
         return Uri.parse(path)
     }
+
+    fun Uri.toBitmap(context: Context): Bitmap? {
+        var bitmap: Bitmap? = null
+        val contentResolver: ContentResolver = context.contentResolver
+        return try {
+            if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(contentResolver, this)
+            } else {
+                val source: ImageDecoder.Source = ImageDecoder.createSource(contentResolver, this)
+                ImageDecoder.decodeBitmap(source)
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun Bitmap.toByteArray(): String? {
+        val baos = ByteArrayOutputStream()
+        this.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val b = baos.toByteArray()
+        return Base64.getEncoder().encodeToString(b)
+    }
+
 }
