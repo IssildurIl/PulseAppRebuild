@@ -314,6 +314,4 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
 
         }
     }
-
-
 }

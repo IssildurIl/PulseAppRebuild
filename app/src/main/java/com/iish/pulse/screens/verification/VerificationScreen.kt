@@ -102,8 +102,9 @@ fun CommonVerificationScreen(verificationViewModel: VerificationViewModel) {
                                 modifier = Modifier
                                     .width(40.dp)
                                     .border(
-                                        1.dp,
-                                        Color.LightGray,
+                                        if (isFocused) 2.dp
+                                        else 1.dp,
+                                        if (isFocused) Color.DarkGray else Color.LightGray,
                                         RoundedCornerShape(8.dp)
                                     )
                                     .padding(2.dp),

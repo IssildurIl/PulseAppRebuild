@@ -68,20 +68,21 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun registerUser() {
-        if (checkFields()) {
-            val login = "+${mobileCountry.code + phone}"
-            val password = Utils.md5(password)
-            viewModelScope.launch {
-                val newUser = CreateUser(email, password, login, name, pickedImageBitmap.value ?: "")
-                val response = userHelper.createNewUser(newUser)
-                if (response.isSuccessful) {
-                    loadDataToDB(login, password)
-                    _registrationViewState.postValue(RegistrationViewState.Success)
-                } else {
-                    _registrationViewState.postValue(RegistrationViewState.Error)
-                }
-            }
-        }
+        _registrationViewState.postValue(RegistrationViewState.Success)
+//        if (checkFields()) {
+//            val login = "+${mobileCountry.code + phone}"
+//            val password = Utils.md5(password)
+//            viewModelScope.launch {
+//                val newUser = CreateUser(email, password, login, name, pickedImageBitmap.value ?: "")
+//                val response = userHelper.createNewUser(newUser)
+//                if (response.isSuccessful) {
+//                    loadDataToDB(login, password)
+//                    _registrationViewState.postValue(RegistrationViewState.Success)
+//                } else {
+//                    _registrationViewState.postValue(RegistrationViewState.Error)
+//                }
+//            }
+//        }
     }
 
     private fun checkFields(): Boolean {

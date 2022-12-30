@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -369,7 +370,7 @@ fun ImagePickerView(
         painter = if (lastSelectedImage == null)
             painterResource(R.drawable.icon_add_photo)
         else
-            rememberImagePainter(lastSelectedImage),
+            rememberAsyncImagePainter(lastSelectedImage),
         contentDescription = "Profile Picture",
         contentScale = ContentScale.Crop
     )
