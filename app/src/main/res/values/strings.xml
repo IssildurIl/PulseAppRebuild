@@ -23,6 +23,9 @@
 
     <!--Verification-->
     <string name="activation_title">Activation</string>
+    <string name="verification_hint">Within 30 seconds the code will be sent to your email</string>
+    <string name="verification_dont_recieve">Did not receive the code</string>
+    <string name="verification_btn">Login</string>
 
 
     <!--Validation-->

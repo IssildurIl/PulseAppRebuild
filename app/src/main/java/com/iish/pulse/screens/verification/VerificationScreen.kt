@@ -1,6 +1,7 @@
 package com.iish.pulse.screens.verification
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -8,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -15,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -23,7 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.iish.pulse.screens.elements.CustomTopAppBar
+import com.iish.pulse.screens.registration.models.RegistrationEvent
 import com.iish.pulse.screens.registration.models.RegistrationViewState
+import com.iish.pulse.screens.verification.models.VerificationEvent
+import com.iish.pulse.utils.gilroy_regular
 import com.iish.pulseapprebuild.R
 
 @Composable
@@ -66,6 +72,7 @@ fun CommonVerificationScreen(verificationViewModel: VerificationViewModel) {
         mutableStateOf("")
     }
 
+
     Scaffold(topBar = {
         CustomTopAppBar(
             topAppBarText = stringResource(id = R.string.activation_title),
@@ -80,10 +87,24 @@ fun CommonVerificationScreen(verificationViewModel: VerificationViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
+            Text(
+                text = stringResource(id = R.string.verification_hint),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth(),
+                style = MaterialTheme.typography.h5,
+                color = Color.Black,
+                fontFamily = gilroy_regular
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
             BasicTextField(
                 value = otpCode,
                 onValueChange = {
-                    if (it.length <= 4) {
+                    if (it.length <= 6) {
                         otpCode = it
                     }
                 },
@@ -92,7 +113,7 @@ fun CommonVerificationScreen(verificationViewModel: VerificationViewModel) {
                 ),
                 decorationBox = {
                     Row(horizontalArrangement = Arrangement.Center) {
-                        repeat(4) { index ->
+                        repeat(6) { index ->
                             val char = when {
                                 index >= otpCode.length -> ""
                                 else -> otpCode[index].toString()
@@ -118,6 +139,36 @@ fun CommonVerificationScreen(verificationViewModel: VerificationViewModel) {
                     }
                 }
             )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = stringResource(id = R.string.verification_dont_recieve),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+                    .clickable(onClick = {
+
+                    }),
+                style = MaterialTheme.typography.subtitle1,
+                color = Color.Black,
+                fontFamily = gilroy_regular
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            ElevatedButton(
+                onClick = {
+                    verificationViewModel.obtainEvent(VerificationEvent.OnVerificationClicked)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(5.dp))
+            ) {
+                Text(text = stringResource(id = R.string.verification_btn), color = Color.Black)
+            }
         }
     }
 }

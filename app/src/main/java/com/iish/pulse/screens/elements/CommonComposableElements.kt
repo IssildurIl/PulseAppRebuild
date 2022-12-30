@@ -2,6 +2,8 @@ package com.iish.pulse.screens.elements
 
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -453,7 +455,7 @@ fun InfoDialog(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(5.dp))
+                                .clip(RoundedCornerShape(10.dp))
                         ) {
                             Text(text = secondBtnText, color = Color.Black)
                         }
@@ -546,5 +548,35 @@ fun ComposablePermission(
                 grantState = it
             }
         onDenied { launcher.launch(permission) }
+    }
+}
+
+@Composable
+fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+    // Safely update the current `onBack` lambda when a new one is provided
+    val currentOnBack by rememberUpdatedState(onBack)
+    // Remember in Composition a back callback that calls the `onBack` lambda
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
+        }
+    }
+    // On every successful composition, update the callback with the `enabled` value
+    SideEffect {
+        backCallback.isEnabled = enabled
+    }
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, backDispatcher) {
+        // Add callback to the backDispatcher
+        backDispatcher.addCallback(lifecycleOwner, backCallback)
+        // When the effect leaves the Composition, remove the callback
+        onDispose {
+            backCallback.remove()
+        }
     }
 }

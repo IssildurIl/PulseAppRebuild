@@ -91,6 +91,8 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
     val focusManager = LocalFocusManager.current
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isReplyPasswordVisible by remember { mutableStateOf(false) }
+
+
     //iconPick
 
     val infoDialog = remember { mutableStateOf(false) }
@@ -112,10 +114,12 @@ fun CommonRegistrationScreen(registrationViewModel: RegistrationViewModel) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
 
+    BackHandler(onBack = {})
     Scaffold(topBar = {
         CustomTopAppBar(
             topAppBarText = stringResource(id = R.string.registration_title),
-            onBackPressed = { }
+            onBackPressed = {
+                }
         )
     }) { paddingValues ->
         Image(

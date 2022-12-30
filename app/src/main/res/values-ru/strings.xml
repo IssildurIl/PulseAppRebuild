@@ -23,6 +23,10 @@
 
     <!--Verification-->
     <string name="activation_title">Активация</string>
+    <string name="verification_hint">В течении 30 секунд код прийдет на Вашу почту</string>
+    <string name="verification_dont_recieve"><u>Не получили код</u></string>
+    <string name="verification_btn">Вход</string>
+
 
     <!--Validation-->
     <string name="name_validation">Ошибка ввода имени</string>
